@@ -41,7 +41,7 @@ abstract class Model extends \think\Model
     /**
      * 快捷表单逻辑器
      * @param string $template 模板名称
-     * @param string $field 指定数据对象主键
+     * @param string $field 指定数据主键
      * @param array $where 额外更新条件
      * @param array $data 表单扩展数据
      * @return array|bool
