@@ -6,9 +6,6 @@ namespace think\admin\helper;
 
 use think\admin\Helper;
 use think\db\BaseQuery;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\DbException;
-use think\db\exception\ModelNotFoundException;
 use think\db\Query;
 use think\Model;
 
@@ -54,7 +51,7 @@ class QueryHelper extends Helper
      * @param string|array|null $input 输入数据
      * @param callable|null $callable 初始回调
      * @return $this
-     * @throws DbException
+     * @throws \think\db\exception\DbException
      */
     public function init($dbQuery, $input = null, ?callable $callable = null): QueryHelper
     {
@@ -188,9 +185,9 @@ class QueryHelper extends Helper
      * @param integer $limit 集合每页记录数
      * @param string $template 模板文件名称
      * @return array
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     public function page(bool $page = true, bool $display = true, $total = false, int $limit = 0, string $template = ''): array
     {
@@ -224,9 +221,9 @@ class QueryHelper extends Helper
      * @param ?callable $befor 表单前置操作
      * @param ?callable $after 表单后置操作
      * @param string $template 前端模板文件
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     public function layTable(?callable $befor = null, ?callable $after = null, string $template = '')
     {

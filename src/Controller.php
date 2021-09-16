@@ -15,9 +15,6 @@ use think\admin\service\AdminNodeService;
 use think\admin\service\QueueService;
 use think\App;
 use think\db\BaseQuery;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\DbException;
-use think\db\exception\ModelNotFoundException;
 use think\db\Query;
 use think\exception\HttpResponseException;
 use think\Model;
@@ -184,7 +181,7 @@ abstract class Controller extends \stdClass
      * @param Model|Query|string $dbQuery
      * @param array|string|null $input
      * @return QueryHelper
-     * @throws DbException
+     * @throws \think\db\exception\DbException
      */
     protected function _query($dbQuery, $input = null): QueryHelper
     {
@@ -200,9 +197,9 @@ abstract class Controller extends \stdClass
      * @param integer $limit 集合每页记录数
      * @param string $template 模板文件名称
      * @return array
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     protected function _page($dbQuery, bool $page = true, bool $display = true, $total = false, int $limit = 0, string $template = ''): array
     {
@@ -217,9 +214,9 @@ abstract class Controller extends \stdClass
      * @param array $where 额外更新条件
      * @param array $data 表单扩展数据
      * @return array|boolean
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     protected function _form($dbQuery, string $template = '', string $field = '', array $where = [], array $data = [])
     {
@@ -245,7 +242,7 @@ abstract class Controller extends \stdClass
      * @param string $field 数据对象主键
      * @param array $where 额外更新条件
      * @return boolean
-     * @throws DbException
+     * @throws \think\db\exception\DbException
      */
     protected function _save($dbQuery, array $data = [], string $field = '', array $where = []): bool
     {
@@ -258,7 +255,7 @@ abstract class Controller extends \stdClass
      * @param string $field 数据对象主键
      * @param array $where 额外更新条件
      * @return boolean|null
-     * @throws DbException
+     * @throws \think\db\exception\DbException
      */
     protected function _delete($dbQuery, string $field = '', array $where = []): ?bool
     {
@@ -302,5 +299,4 @@ abstract class Controller extends \stdClass
             $this->error("创建任务失败，{$exception->getMessage()}");
         }
     }
-
 }

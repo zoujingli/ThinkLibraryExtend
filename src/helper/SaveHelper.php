@@ -6,7 +6,6 @@ namespace think\admin\helper;
 
 use think\admin\Helper;
 use think\db\BaseQuery;
-use think\db\exception\DbException;
 use think\Model;
 
 /**
@@ -24,7 +23,7 @@ class SaveHelper extends Helper
      * @param string $field 数据对象主键
      * @param array $where 额外更新条件
      * @return boolean
-     * @throws DbException
+     * @throws \think\db\exception\DbException
      */
     public function init($dbQuery, array $edata = [], string $field = '', array $where = []): bool
     {
