@@ -4,6 +4,7 @@ declare (strict_types=1);
 
 namespace think\admin\multiple;
 
+use InvalidArgumentException;
 use think\admin\service\AdminNodeService;
 use think\route\Url;
 
@@ -33,15 +34,15 @@ class BuildUrl extends Url
             $node = AdminNodeService::instance()->getCurrent();
             $url = $this->app->route->buildUrl($node)->suffix(false)->domain(false)->build();
         } else {
-            $paths = explode('/', $url);
-            $action = empty($paths) ? $request->action() : array_pop($paths);
-            $contrl = empty($paths) ? $request->controller() : array_pop($paths);
-            $module = empty($paths) ? $this->app->http->getName() : array_pop($paths);
-            // 计算出新链接地址
+            $path = explode('/', $url);
+            $action = empty($path) ? $request->action() : array_pop($path);
+            $contrl = empty($path) ? $request->controller() : array_pop($path);
+            $module = empty($path) ? $this->app->http->getName() : array_pop($path);
+            // 拼装新的链接地址
             $url = AdminNodeService::nameTolower($contrl) . '/' . $action;
             $bind = $this->app->config->get('app.domain_bind', []);
             if ($key = array_search($module, $bind)) {
-                if ($bind[$_SERVER['SERVER_NAME']]) $domain = $_SERVER['SERVER_NAME'];
+                if (isset($bind[$_SERVER['SERVER_NAME']])) $domain = $_SERVER['SERVER_NAME'];
                 $domain = is_bool($domain) ? $key : $domain;
             } elseif ($key = array_search($module, $this->app->config->get('app.app_map', []))) {
                 $url = $key . '/' . $url;
@@ -87,7 +88,6 @@ class BuildUrl extends Url
                 [$url, $domain] = explode('@', $url, 2);
             }
         }
-
         if ($url) {
             $checkDomain = $domain && is_string($domain) ? $domain : null;
             $checkName = $name ?? $url . (isset($info['query']) ? '?' . $info['query'] : '');
@@ -107,7 +107,7 @@ class BuildUrl extends Url
                 $url = $this->app->http->getName() . '/' . $url;
             }
         } elseif (!empty($rule) && isset($name)) {
-            throw new \InvalidArgumentException('route name not exists:' . $name);
+            throw new InvalidArgumentException('route name not exists:' . $name);
         } else {
             // 检测URL绑定
             $bind = $this->route->getDomainBind($domain && is_string($domain) ? $domain : null);

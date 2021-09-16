@@ -2,6 +2,7 @@
 
 namespace think\admin;
 
+use Closure;
 use think\admin\command\Develop;
 use think\admin\command\Replace;
 use think\admin\command\Service;
@@ -34,7 +35,6 @@ class Library extends \think\Service
     public function boot()
     {
         // 服务初始化处理
-        includeFile(__DIR__ . '/common.php');
         $this->app->event->listen('HttpRun', function (Request $request) {
             // 配置默认输入过滤
             $request->filter(['trim']);
@@ -80,7 +80,7 @@ class Library extends \think\Service
                 $this->app->middleware->add(LoadLangPack::class);
             }
             // 注册访问处理中间键
-            $this->app->middleware->add(function (Request $request, \Closure $next) {
+            $this->app->middleware->add(function (Request $request, Closure $next) {
                 $header = [];
                 if (($origin = $request->header('origin', '*')) !== '*') {
                     $auto = $this->app->config->get('app.cors_auto', 1);
@@ -99,6 +99,7 @@ class Library extends \think\Service
                 if ($request->isOptions()) {
                     return response()->code(204)->header($header);
                 } elseif (AdminAuthService::instance()->check()) {
+                    $header['X-Frame-Options'] = 'sameorigin';
                     return $next($request)->header($header);
                 } elseif (AdminAuthService::instance()->isLogin()) {
                     return json(['code' => 0, 'info' => lang('think_library_not_auth')])->header($header);

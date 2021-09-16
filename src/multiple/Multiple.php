@@ -66,7 +66,7 @@ class Multiple
      */
     protected function parseMultiApp(): bool
     {
-        $defaultApp = $this->app->config->get('app.default_app') ?: 'index';
+        $defaultApp = $this->app->config->get('route.default_app') ?: 'index';
         [$script, $path] = [$this->scriptName(), $this->app->request->pathinfo()];
         if ($this->name || ($script && !in_array($script, ['index', 'router', 'think']))) {
             $appName = $this->name ?: $script;
@@ -135,16 +135,13 @@ class Multiple
     private function setApp(string $appName): void
     {
         $space = $this->app->config->get('app.app_namespace') ?: 'app';
-
-        $this->app->setNamespace("{$space}\\{$appName}");
         $appPath = $this->path ?: $this->app->getBasePath() . $appName . DIRECTORY_SEPARATOR;
-
+        // 动态设置多应用变量
         $this->app->setAppPath($appPath);
+        $this->app->setNamespace("{$space}\\{$appName}");
         $this->app->http->name($appName);
-
         if (is_dir($appPath)) {
-            $this->app->setRuntimePath($this->app->getRuntimePath() . DIRECTORY_SEPARATOR);
-            $this->app->http->setRoutePath($this->app->getAppPath() . 'route' . DIRECTORY_SEPARATOR);
+            $this->app->http->setRoutePath($appPath . 'route' . DIRECTORY_SEPARATOR);
             $this->loadApp($appPath);
         }
     }
@@ -177,15 +174,12 @@ class Multiple
 
     /**
      * 获取当前运行入口名称
+     * @codeCoverageIgnore
      * @return string
      */
     private function scriptName(): string
     {
-        if (isset($_SERVER['SCRIPT_FILENAME'])) {
-            $file = $_SERVER['SCRIPT_FILENAME'];
-        } elseif (isset($_SERVER['argv'][0])) {
-            $file = realpath($_SERVER['argv'][0]);
-        }
-        return isset($file) ? pathinfo($file, PATHINFO_FILENAME) : '';
+        $file = $_SERVER['SCRIPT_FILENAME'] ?? ($_SERVER['argv'][0] ?? '');
+        return empty($file) ? '' : pathinfo($file, PATHINFO_FILENAME);
     }
 }
