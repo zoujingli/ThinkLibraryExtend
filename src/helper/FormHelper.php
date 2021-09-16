@@ -27,7 +27,7 @@ class FormHelper extends Helper
      * @param string $field 指定数据主键
      * @param array $where 额外更新条件
      * @param array $edata 表单扩展数据
-     * @return array|boolean
+     * @return array|boolean|void
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
