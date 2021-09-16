@@ -71,7 +71,7 @@ abstract class Storage
      * @param string $method 方法名称
      * @param array $arguments 调用参数
      * @return mixed
-     * @throws Exception
+     * @throws \think\admin\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -89,7 +89,7 @@ abstract class Storage
      * 设置文件驱动名称
      * @param null|string $name 驱动名称
      * @return static
-     * @throws Exception
+     * @throws \think\admin\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException

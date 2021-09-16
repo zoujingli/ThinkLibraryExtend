@@ -4,6 +4,7 @@ declare (strict_types=1);
 
 namespace think\admin\storage;
 
+use think\admin\Exception;
 use think\admin\extend\HttpExtend;
 use think\admin\Storage;
 
@@ -58,7 +59,7 @@ class AliossStorage extends Storage
         if ($type === 'auto') $this->prefix = "//{$domain}";
         elseif ($type === 'http') $this->prefix = "http://{$domain}";
         elseif ($type === 'https') $this->prefix = "https://{$domain}";
-        else throw new \think\admin\Exception('未配置阿里云URL域名哦');
+        else throw new Exception('未配置阿里云URL域名哦');
     }
 
     /**
@@ -269,5 +270,4 @@ class AliossStorage extends Storage
             'oss-me-east-1.aliyuncs.com'      => '中东东部 1（迪拜）',
         ];
     }
-
 }

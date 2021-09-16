@@ -4,6 +4,7 @@ declare (strict_types=1);
 
 namespace think\admin\storage;
 
+use think\admin\Exception;
 use think\admin\extend\HttpExtend;
 use think\admin\Storage;
 
@@ -30,7 +31,7 @@ class TxcosStorage extends Storage
      * $secretId
      * @var string
      */
-    private $accessKey;
+    private $secretId;
 
     /**
      * secretKey
@@ -50,7 +51,7 @@ class TxcosStorage extends Storage
         // 读取配置文件
         $this->point = sysconf('storage.txcos_point');
         $this->bucket = sysconf('storage.txcos_bucket');
-        $this->accessKey = sysconf('storage.txcos_access_key');
+        $this->secretId = sysconf('storage.txcos_access_key');
         $this->secretKey = sysconf('storage.txcos_secret_key');
         // 计算链接前缀
         $type = strtolower(sysconf('storage.txcos_http_protocol'));
@@ -58,7 +59,7 @@ class TxcosStorage extends Storage
         if ($type === 'auto') $this->prefix = "//{$domain}";
         elseif ($type === 'http') $this->prefix = "http://{$domain}";
         elseif ($type === 'https') $this->prefix = "https://{$domain}";
-        else throw new \think\admin\Exception('未配置腾讯云COS访问域名哦');
+        else throw new Exception('未配置腾讯云COS访问域名哦');
     }
 
     /**
@@ -202,10 +203,10 @@ class TxcosStorage extends Storage
         $siteurl = $this->url($name, false, $attname);
         $policy = json_encode([
             'expiration' => date('Y-m-d\TH:i:s.000\Z', $endTimestamp),
-            'conditions' => [['q-ak' => $this->accessKey], ['q-sign-time' => $keyTime], ['q-sign-algorithm' => 'sha1']],
+            'conditions' => [['q-ak' => $this->secretId], ['q-sign-time' => $keyTime], ['q-sign-algorithm' => 'sha1']],
         ]);
         return [
-            'policy'      => base64_encode($policy), 'q-ak' => $this->accessKey,
+            'policy'      => base64_encode($policy), 'q-ak' => $this->secretId,
             'siteurl'     => $siteurl, 'q-key-time' => $keyTime, 'q-sign-algorithm' => 'sha1',
             'q-signature' => hash_hmac('sha1', sha1($policy), hash_hmac('sha1', $keyTime, $this->secretKey)),
         ];
@@ -251,7 +252,7 @@ class TxcosStorage extends Storage
         // 8.生成签名
         $signArray = [
             'q-sign-algorithm' => 'sha1',
-            'q-ak'             => $this->accessKey,
+            'q-ak'             => $this->secretId,
             'q-sign-time'      => $keyTime,
             'q-key-time'       => $keyTime,
             'q-header-list'    => $headerList,

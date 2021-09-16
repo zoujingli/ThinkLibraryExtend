@@ -4,6 +4,7 @@ declare (strict_types=1);
 
 namespace think\admin\storage;
 
+use think\admin\Exception;
 use think\admin\extend\HttpExtend;
 use think\admin\Storage;
 
@@ -38,7 +39,7 @@ class QiniuStorage extends Storage
         if ($type === 'auto') $this->prefix = "//{$domain}";
         elseif ($type === 'http') $this->prefix = "http://{$domain}";
         elseif ($type === 'https') $this->prefix = "https://{$domain}";
-        else throw new \think\admin\Exception('未配置七牛云URL域名哦');
+        else throw new Exception('未配置七牛云URL域名哦');
     }
 
     /**
@@ -176,7 +177,7 @@ class QiniuStorage extends Storage
             case '东南亚':
                 return "{$protocol}://up-as0.qiniup.com";
             default:
-                throw new \think\admin\Exception('未配置七牛云空间区域哦');
+                throw new Exception('未配置七牛云空间区域哦');
         }
     }
 

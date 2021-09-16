@@ -1,5 +1,18 @@
 <?php
 
+// +----------------------------------------------------------------------
+// | Library for ThinkAdmin
+// +----------------------------------------------------------------------
+// | 版权所有 2014~2021 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
+// +----------------------------------------------------------------------
+// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
+// +----------------------------------------------------------------------
+// | 开源协议 ( https://mit-license.org )
+// +----------------------------------------------------------------------
+// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
+// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
+// +----------------------------------------------------------------------
+
 return [
     'ez'          => 'application/andrew-inset',
     'aw'          => 'application/applixware',
@@ -985,4 +998,15 @@ return [
     'smv'         => 'video/x-smv',
     'ice'         => 'x-conference/x-cooltalk',
     'pem'         => 'application/x-pem-file',
+    'dif'         => 'video/x-dv',
+    'dv'          => 'video/x-dv',
+    'gz'          => 'application/x-gzip',
+    'jp2'         => 'image/jp2',
+    'm4p'         => 'audio/mp4a-latm',
+    'mac'         => 'image/x-macpaint',
+    'pict'        => 'image/pict',
+    'pnt'         => 'image/x-macpaint',
+    'pntg'        => 'image/x-macpaint',
+    'qti'         => 'image/x-quicktime',
+    'qtif'        => 'image/x-quicktime',
 ];

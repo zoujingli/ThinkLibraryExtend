@@ -4,6 +4,7 @@ declare (strict_types=1);
 
 namespace think\admin\storage;
 
+use Exception;
 use think\admin\Storage;
 
 /**
@@ -63,9 +64,9 @@ class LocalStorage extends Storage
             if (file_put_contents($path, $file)) {
                 return $this->info($name, $safe, $attname);
             }
-        } catch (\Exception $exception) {
-            return [];
+        } catch (Exception $exception) {
         }
+        return [];
     }
 
     /**
@@ -154,5 +155,4 @@ class LocalStorage extends Storage
     {
         return url('admin/api.upload/file')->build();
     }
-
 }
