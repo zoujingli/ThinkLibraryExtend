@@ -6,7 +6,6 @@ namespace think\admin\helper;
 
 use think\admin\Helper;
 use think\admin\service\AdminAuthService;
-use think\admin\service\AdminService;
 use think\db\BaseQuery;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
