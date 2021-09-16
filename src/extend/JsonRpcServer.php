@@ -1,10 +1,22 @@
 <?php
 
+// +----------------------------------------------------------------------
+// | Library for ThinkAdmin
+// +----------------------------------------------------------------------
+// | 版权所有 2014~2021 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
+// +----------------------------------------------------------------------
+// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
+// +----------------------------------------------------------------------
+// | 开源协议 ( https://mit-license.org )
+// +----------------------------------------------------------------------
+// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
+// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
+// +----------------------------------------------------------------------
+
 declare (strict_types=1);
 
 namespace think\admin\extend;
 
-use Exception;
 use ReflectionClass;
 use ReflectionMethod;
 use think\App;
@@ -62,22 +74,26 @@ class JsonRpcServer
                 $error = ['code' => '-32600', 'message' => '无效的请求', 'meaning' => '发送的JSON不是一个有效的请求对象'];
                 $response = ['jsonrpc' => '2.0', 'id' => $request['id'] ?? '0', 'result' => null, 'error' => $error];
             } else try {
-                if (strtolower($request['method']) === '_get_class_name_') {
+                if ($object instanceof \Exception) {
+                    throw $object;
+                } elseif (strtolower($request['method']) === '_get_class_name_') {
                     $response = ['jsonrpc' => '2.0', 'id' => $request['id'], 'result' => get_class($object), 'error' => null];
                 } elseif (method_exists($object, $request['method'])) {
-                    // Executes the task on local object
                     $result = call_user_func_array([$object, $request['method']], $request['params']);
                     $response = ['jsonrpc' => '2.0', 'id' => $request['id'], 'result' => $result, 'error' => null];
                 } else {
                     $error = ['code' => '-32601', 'message' => '找不到方法', 'meaning' => '该方法不存在或无效'];
                     $response = ['jsonrpc' => '2.0', 'id' => $request['id'], 'result' => null, 'error' => $error];
                 }
-            } catch (Exception $exception) {
+            } catch (\think\admin\Exception $exception) {
+                $error = ['code' => $exception->getCode(), 'message' => $exception->getMessage()];
+                $response = ['jsonrpc' => '2.0', 'id' => $request['id'], 'result' => $exception->getData(), 'error' => $error];
+            } catch (\Exception $exception) {
                 $error = ['code' => $exception->getCode(), 'message' => $exception->getMessage()];
                 $response = ['jsonrpc' => '2.0', 'id' => $request['id'], 'result' => null, 'error' => $error];
             }
             // Output the response
-            throw new HttpResponseException(json($response)->contentType('text/javascript'));
+            throw new HttpResponseException(json($response));
         }
     }
 
@@ -101,7 +117,7 @@ class JsonRpcServer
                 echo '<div style="color:#666">' . nl2br($method->getDocComment() ?: '') . '</div>';
                 echo "<div style='color:#00E'>{$object->getShortName()}::{$method->getName()}({$params})</div><br>";
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             echo "<h3>[{$exception->getCode()}] {$exception->getMessage()}</h3>";
         }
     }

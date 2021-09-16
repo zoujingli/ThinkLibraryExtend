@@ -1,5 +1,18 @@
 <?php
 
+// +----------------------------------------------------------------------
+// | Library for ThinkAdmin
+// +----------------------------------------------------------------------
+// | 版权所有 2014~2021 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
+// +----------------------------------------------------------------------
+// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
+// +----------------------------------------------------------------------
+// | 开源协议 ( https://mit-license.org )
+// +----------------------------------------------------------------------
+// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
+// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
+// +----------------------------------------------------------------------
+
 declare (strict_types=1);
 
 namespace think\admin\extend;
@@ -72,7 +85,7 @@ class JsonRpcClient
         if (is_null($response['error'])) {
             return $response['result'];
         } else {
-            throw new Exception("请求错误：{$response['error']['message']}", $response['error']['code']);
+            throw new Exception($response['error']['message'], $response['error']['code'], $response['result']);
         }
     }
 }
