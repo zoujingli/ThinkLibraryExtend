@@ -24,6 +24,11 @@ class Develop extends Command
         $this->setDescription("Custom extension collection, Argument: database|version");
     }
 
+    /**
+     * @param \think\console\Input $input
+     * @param \think\console\Output $output
+     * @return void
+     */
     protected function execute(Input $input, Output $output)
     {
         $action = $input->hasOption('action') ? 'database' : $input->getArgument('action');
@@ -57,5 +62,4 @@ class Develop extends Command
         $this->output->writeln('ThinkPHPCore ' . $this->app->version());
         $this->output->writeln('ThinkLibVers ' . Library::VERSION);
     }
-
 }
