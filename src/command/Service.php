@@ -4,13 +4,18 @@ declare (strict_types=1);
 
 namespace think\admin\command;
 
+use Error;
+use Exception;
 use Psr\Log\NullLogger;
 use think\admin\Command;
+use think\admin\Queue;
+use think\admin\service\QueueService;
 use think\Collection;
 use think\console\Input;
 use think\console\input\Argument;
 use think\console\input\Option;
 use think\console\Output;
+use Throwable;
 
 /**
  * 异步任务管理指令
@@ -238,7 +243,7 @@ class Service extends Command
                     $this->process->thinkCreate($args);
                     $this->output->writeln("># Created new process -> [{$vo['code']}] {$vo['title']}");
                 }
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $this->app->db->name($this->table)->where(['code' => $vo['code']])->update([
                     'status' => 4, 'outer_time' => time(), 'exec_desc' => $exception->getMessage(),
                 ]);
@@ -277,9 +282,9 @@ class Service extends Command
                 if (class_exists($command = $this->queue->record['command'])) {
                     // 自定义任务，支持返回消息（支持异常结束，异常码可选择 3|4 设置任务状态）
                     $class = $this->app->make($command, [], true);
-                    if ($class instanceof \think\admin\Queue) {
+                    if ($class instanceof Queue) {
                         $this->updateQueue(3, $class->initialize($this->queue)->execute($this->queue->data) ?: '');
-                    } elseif ($class instanceof \think\admin\service\QueueService) {
+                    } elseif ($class instanceof QueueService) {
                         $this->updateQueue(3, $class->initialize($this->queue->code)->execute($this->queue->data) ?: '');
                     } else {
                         throw new \think\admin\Exception("自定义 {$command} 未继承 Queue 或 QueueService");
@@ -290,7 +295,7 @@ class Service extends Command
                     $this->updateQueue(3, $this->app->console->call(array_shift($attr), $attr)->fetch(), false);
                 }
             }
-        } catch (\Exception | \Throwable | \Error  $exception) {
+        } catch (Exception | Throwable | Error  $exception) {
             $code = $exception->getCode();
             if (intval($code) !== 3) $code = 4;
             $this->updateQueue($code, $exception->getMessage());
@@ -326,7 +331,7 @@ class Service extends Command
         if (isset($this->queue->record['loops_time']) && $this->queue->record['loops_time'] > 0) {
             try {
                 $this->queue->initialize($this->code)->reset($this->queue->record['loops_time']);
-            } catch (\Exception | \Throwable | \Error  $exception) {
+            } catch (Exception | Throwable | Error  $exception) {
                 $this->app->log->error("Queue {$this->queue->record['code']} Loops Failed. {$exception->getMessage()}");
             }
         }

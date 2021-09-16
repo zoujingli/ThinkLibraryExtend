@@ -15,7 +15,7 @@ use think\helper\Str;
 /**
  * 数据库字符替换
  * Class Replace
- * @package app\wechat\command
+ * @package think\admin\command
  */
 class Replace extends Command
 {
