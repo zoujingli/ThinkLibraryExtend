@@ -34,6 +34,16 @@ abstract class Controller extends \stdClass
      */
     public $app;
 
+    /**
+     * 请求数据
+     * @var array
+     */
+    public $get;
+
+    /**
+     * 当前节点
+     * @var string
+     */
     public $node;
 
     /**
@@ -69,6 +79,7 @@ abstract class Controller extends \stdClass
         $this->app = $app;
         $this->request = $app->request;
         $this->node = AdminNodeService::instance()->getCurrent();
+        $this->get = $this->request->get();
         $this->app->bind('think\admin\Controller', $this);
         if (in_array($this->request->action(), get_class_methods(__CLASS__))) {
             $this->error('Access without permission.');
