@@ -36,6 +36,8 @@ if (!function_exists('M')) {
     {
         return Helper::buildModel($name, $data, $conn);
     }
+
+
 }
 
 if (!function_exists('auth')) {
@@ -48,6 +50,26 @@ if (!function_exists('auth')) {
     function auth(?string $node): bool
     {
         return AdminAuthService::instance()->check($node);
+    }
+}
+
+if (!function_exists('xssSafeFilter')) {
+    /**
+     * 文本内容XSS过滤
+     * @param string $text
+     * @return string
+     */
+    function xssSafeFilter(string $text): string
+    {
+        $rules = [
+            '#<script.*?<\/script>#i'        => '',
+            '#\s+on\w+=[\'\"]+.*?(\'|\")+#i' => '',
+            '#\s+on\w+=\s*.*?(\s|>)+#i'      => '$1',
+        ];
+        foreach ($rules as $rule => $value) {
+            $text = preg_replace($rule, $value, $text);
+        }
+        return $text;
     }
 }
 
