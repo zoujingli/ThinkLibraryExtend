@@ -5,9 +5,13 @@ declare (strict_types=1);
 namespace think\admin\service;
 
 use think\admin\Helper;
+use think\admin\model\SystemData;
+use think\admin\model\SystemOplog;
 use think\admin\Service;
 use think\db\exception\ModelNotFoundException;
+use think\db\Query;
 use think\helper\Str;
+use think\Model;
 
 /**
  * 系统参数管理服务
@@ -89,14 +93,14 @@ class SystemService extends Service
 
     /**
      * 数据增量保存
-     * @param $query
-     * @param array $data 需要保存的数据
+     * @param Model|Query|string $query 数据查询对象
+     * @param array $data 需要保存的数据，成功返回对应模型
      * @param string $key 更新条件查询主键
-     * @param array $map
+     * @param array $map 额外更新查询条件
      * @return boolean|integer 失败返回 false, 成功返回主键值或 true
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
-     * @throws ModelNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     public function save($query, array &$data, string $key = 'id', array $map = [])
     {
@@ -112,7 +116,7 @@ class SystemService extends Service
         if (($model = $query->where($map)->find()) && !empty($model)) {
             if ($model->save($data) === false) return false;
             // 模型自定义事件回调
-            if (method_exists($model, 'onAdminUpdate')) {
+            if ($model instanceof \think\admin\Model) {
                 $model->onAdminUpdate(strval($model[$key] ?? ''));
             }
             $data = $model->toArray();
@@ -121,7 +125,7 @@ class SystemService extends Service
             $model = $query->getModel();
             if ($model->data($data)->save() === false) return false;
             // 模型自定义事件回调
-            if (method_exists($model, 'onAdminInsert')) {
+            if ($model instanceof \think\admin\Model) {
                 $model->onAdminInsert(strval($model[$key] ?? ''));
             }
             $data = $model->toArray();
@@ -206,7 +210,7 @@ class SystemService extends Service
     public function getData(string $name, $default = [])
     {
         try {
-            $value = $this->app->db->name('SystemData')->where(['name' => $name])->value('value');
+            $value = SystemData::mk()->where(['name' => $name])->value('value');
             return is_null($value) ? $default : unserialize($value);
         } catch (\Exception $exception) {
             return $default;
@@ -222,7 +226,7 @@ class SystemService extends Service
     public function setOplog(string $action, string $content): bool
     {
         $oplog = $this->getOplog($action, $content);
-        return $this->app->db->name('SystemOplog')->insert($oplog) !== false;
+        return SystemOplog::mk()->insert($oplog) !== false;
     }
 
     /**

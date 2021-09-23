@@ -17,6 +17,9 @@ use think\console\Output;
  */
 class Develop extends Command
 {
+    /**
+     * 指令任务配置
+     */
     protected function configure()
     {
         $this->setName('xadmin:develop');
@@ -25,6 +28,7 @@ class Develop extends Command
     }
 
     /**
+     * 任务执行入口
      * @param \think\console\Input $input
      * @param \think\console\Output $output
      * @return void

@@ -19,6 +19,9 @@ use think\helper\Str;
  */
 class Replace extends Command
 {
+    /**
+     * 指令任务配置
+     */
     protected function configure()
     {
         $this->setName('xadmin:replace');
@@ -28,7 +31,7 @@ class Replace extends Command
     }
 
     /**
-     * 执行内容替换指令
+     * 任务执行入口
      * @param Input $input
      * @param Output $output
      * @return Replace|Command

@@ -32,7 +32,7 @@ class JsonRpcClient
     public function __construct(string $proxy)
     {
         $this->proxy = $proxy;
-        $this->id = CodeExtend::random();
+        $this->id = CodeExtend::uniqidTime();
     }
 
     /**
@@ -44,7 +44,6 @@ class JsonRpcClient
      */
     public function __call(string $method, array $params = [])
     {
-        // Performs the HTTP POST
         $options = [
             'ssl'  => [
                 'verify_peer'      => false,
@@ -58,6 +57,7 @@ class JsonRpcClient
                 ], JSON_UNESCAPED_UNICODE),
             ],
         ];
+        // Performs the HTTP POST
         if ($fp = fopen($this->proxy, 'r', false, stream_context_create($options))) {
             $response = '';
             while ($row = fgets($fp)) $response .= trim($row) . "\n";

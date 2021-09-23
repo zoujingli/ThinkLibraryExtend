@@ -48,7 +48,7 @@ class SaveHelper extends Helper
 
         // 模型自定义事件回调
         $model = $query->getModel();
-        if ($result && method_exists($model, 'onAdminSave')) {
+        if ($result && $model instanceof \think\admin\Model) {
             $model->onAdminSave(strval($value));
         }
 
