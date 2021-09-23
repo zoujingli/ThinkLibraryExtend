@@ -53,13 +53,13 @@ if (!function_exists('auth')) {
     }
 }
 
-if (!function_exists('xssSafeFilter')) {
+if (!function_exists('xss_safe')) {
     /**
      * 文本内容XSS过滤
      * @param string $text
      * @return string
      */
-    function xssSafeFilter(string $text): string
+    function xss_safe(string $text): string
     {
         $rules = [
             '#<script.*?<\/script>#i'        => '',

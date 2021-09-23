@@ -37,7 +37,7 @@ class Library extends \think\Service
         // 服务初始化处理
         $this->app->event->listen('HttpRun', function (Request $request) {
             // 配置默认输入过滤
-            $request->filter(['trim']);
+            $request->filter(['trim', 'xss_safe']);
             // 注册多应用中间键
             $this->app->middleware->add(Multiple::class);
             // 判断访问模式兼容处理
@@ -82,11 +82,10 @@ class Library extends \think\Service
             // 注册访问处理中间键
             $this->app->middleware->add(function (Request $request, Closure $next) {
                 $header = [];
+                // CORS 跨域规则配置
                 if (($origin = $request->header('origin', '*')) !== '*') {
-                    $auto = $this->app->config->get('app.cors_auto', 1);
-                    $hosts = $this->app->config->get('app.cors_host', []);
-                    if (is_string($hosts)) $hosts = str2arr($hosts);
-                    if ($auto || in_array(parse_url(strtolower($origin), PHP_URL_HOST), $hosts)) {
+                    if (is_string($hosts = $this->app->config->get('app.cors_host', []))) $hosts = str2arr($hosts);
+                    if ($this->app->config->get('app.cors_auto', 1) || in_array(parse_url(strtolower($origin), PHP_URL_HOST), $hosts)) {
                         $headers = $this->app->config->get('app.cors_headers', 'Api-Name,Api-Type,Api-Token,User-Form-Token,User-Token,Token');
                         $header['Access-Control-Allow-Origin'] = $origin;
                         $header['Access-Control-Allow-Methods'] = $this->app->config->get('app.cors_methods', 'GET,PUT,POST,PATCH,DELETE');
