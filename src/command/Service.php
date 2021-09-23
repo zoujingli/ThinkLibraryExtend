@@ -184,8 +184,8 @@ class Service extends Command
         $map1 = [['loops_time', '>', 0], ['status', '=', 4]]; // 执行失败的循环任务
         $map2 = [['exec_time', '<', time() - 3600], ['status', '=', 2]]; // 执行超时的任务
         [$timeout, $loops, $total] = [0, 0, SystemQueue::mk()->whereOr([$map1, $map2])->count()];
-        SystemQueue::mk()->whereOr([$map1, $map2])->chunk(100, function (Collection $result) use ($total, &$loops, &$timeout) {
-            foreach ($result->toArray() as $item) {
+        SystemQueue::mk()->whereOr([$map1, $map2])->chunk(100, function (Collection $items) use ($total, &$loops, &$timeout) {
+            foreach ($items->toArray() as $item) {
                 $item['loops_time'] > 0 ? $loops++ : $timeout++;
                 if ($item['loops_time'] > 0) {
                     $this->queue->message($total, $timeout + $loops, "正在重置任务 {$item['code']} 为运行");
